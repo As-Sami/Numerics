@@ -171,14 +171,9 @@ def Secant(exp, tolerance, itetarion, first_guess, second_guess):
     
 def Show_A(info):
     root, table = info
-    print('Root =', root)
-    print(tabulate(table[1:], headers=table[0]))
-    
-expression = 'x**3 - 0.165*x**2 + 3.993e-4'
-Show_A(Bisection(expression, 0.5, 10, 0, 0.11))
-Show_A(FalsePosition(expression, 0.05, 10, 0, 0.11))
-
-Show_A(NewtonRaphson(expression, 2, 10, 0.05))
-Show_A(Secant(expression, 0.5, 5, 0.02, 0.05))
-
-# Draw_Graph(expression, 0, 0.11)
+    if root == None:
+        print('Could not find the root with given tolerace')
+    else:
+        print('Root =', root)
+    if table:
+        print(tabulate(table[1:], headers=table[0]))

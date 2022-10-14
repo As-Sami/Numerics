@@ -1,23 +1,3 @@
-a = [
-    [25, 5, 1],
-    [64, 8, 1],
-    [144, 12, 1]
-]
-
-b = [
-    106.8,
-    177.2,
-    279.2
-]
-
-def print_matrix(a, d=3):
-    for i in a:
-        for j in i:
-            print(format(j, f'.{d}f'), end=' ')
-        print('')
-    print('')
-
-
 def NGE(A: list, b: list):
     '''Naive Gaussian Elemination'''
     n = len(A)   
@@ -43,7 +23,7 @@ def NGE(A: list, b: list):
             except:
                 print('divison by zero')
                 print("Naive Gaussian Elemination failed")
-                return
+                return None
         
         for i in range(k+1, n):
             temp2 = temp.copy()
@@ -97,7 +77,7 @@ def GEPP(A: list, b: list):
                 temp[i] /= val
             except:
                 print('divison by zero')
-                return
+                return None
         
         for i in range(k+1, n):
             temp2 = temp.copy()
@@ -147,7 +127,7 @@ def LU(a: list):
             except:
                 print('divison by zero')
                 print("LU decomposition failed")
-                return None
+                return None, None
         
         for i in range(k+1, n):
             temp2 = temp.copy()
@@ -166,6 +146,9 @@ def LU_Decomposition(a, b):
     '''LU Decomposition'''
     n = len(a)
     L, U = LU(a)
+
+    if L==None and U==None:
+        return None
 
     Z = GEPP(L, b)
     
@@ -196,18 +179,12 @@ def Inverse(a):
         C[i] = 1
         
         x = LU_Decomposition(a, C)
+        if x == None:
+            return None
+        
         print(x)
         
         for j in range(n):
             solution[j].append(x[j])
   
     return solution
-    
-
-# print_matrix(L)
-# print_matrix(U)
-
-# print(GEPP(a, b))
-# print(NGE(a, b))
-# print(LU_Decomposition(a,b))
-# print_matrix(Inverse(a))
