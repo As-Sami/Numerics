@@ -72,6 +72,18 @@ def find_points(x, y, n, target_x):
     if n==4:
         return [points[i-1][0], points[i-2][0], points[i][0], points[i+1][0]] , [points[i-1][1], points[i-2][1], points[i][1], points[i+1][1]]
 
+def find_points(x, y, n, x1):
+    diff = []
+    for i in range(n):
+        diff.append([abs(x[i]-x1),x[i],y[i]])
+
+    diff.sort()
+    xl = []
+    yl = []
+    for i in range(n+1):
+        xl.append(diff[i][1])
+        yl.append(diff[i][2])
+    return xl,yl
 
 def Linear_Interpolation(x, y, target_x):
     
@@ -80,7 +92,7 @@ def Linear_Interpolation(x, y, target_x):
     x0, x1 = x
     y0, y1 = y
     
-    print(x, y)
+    # print(x, y)
     
     a1 = (y0 - y1) / (x0 - x1)
     a0 = y0 - a1*x0
