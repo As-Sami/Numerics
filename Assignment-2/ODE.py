@@ -11,7 +11,7 @@ def Euler_Method(dexp, y_0, x_0, x_last, h):
         x_0 += h
         y_0 = y
 
-    print(y_0)
+    # print(y_0)
     
     return y_0
 
@@ -32,7 +32,7 @@ def Heun(dexp, y_0, x_0, x_last, h):
         y_0 = y
         x_0 = x_0 + h    
     
-    print(y_0)
+    # print(y_0)
     return y_0
 
 def Midpoint(dexp, y_0, x_0, x_last, h):
@@ -49,7 +49,7 @@ def Midpoint(dexp, y_0, x_0, x_last, h):
         y_0 = y
         x_0 = x_0 + h    
     
-    print(y_0)
+    # print(y_0)
     return y_0
     
 def Ralston(dexp, y_0, x_0, x_last, h):
@@ -66,7 +66,7 @@ def Ralston(dexp, y_0, x_0, x_last, h):
         y_0 = y
         x_0 = x_0 + h    
     
-    print(y_0)
+    # print(y_0)
     return y_0
 
 

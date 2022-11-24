@@ -53,8 +53,34 @@ def GEPP(A: list, b: list):
         
     return solution
 
+def find_points(x, y, n, target_x):
+    
+    points = [ [x[i],y[i]] for i in range(len(x)) ]
+    points.sort()
+    
+    
+    i = 0
+    while i < len(x) and points[i][0] < target_x:
+        i += 1
+    
+    if n==2:
+        return [points[i][0], points[i-1][0]] , [points[i][1], points[i-1][1]]
+    
+    if n==3:
+        return [points[i-1][0], points[i-2][0], points[i][0]] , [points[i-1][1], points[i-2][1], points[i][1]]
+    
+    if n==4:
+        return [points[i-1][0], points[i-2][0], points[i][0], points[i+1][0]] , [points[i-1][1], points[i-2][1], points[i][1], points[i+1][1]]
 
-def Linear_Interpolation(x0, y0, x1, y1, target_x):
+
+def Linear_Interpolation(x, y, target_x):
+    
+    x, y = find_points(x, y, 2, target_x)
+    
+    x0, x1 = x
+    y0, y1 = y
+    
+    print(x, y)
     
     a1 = (y0 - y1) / (x0 - x1)
     a0 = y0 - a1*x0
@@ -63,32 +89,44 @@ def Linear_Interpolation(x0, y0, x1, y1, target_x):
     return y_target
 
 
-def Quadratic_Interpolation( xx, yy, target_x):
+def Quadratic_Interpolation( x, y, target_x):
+
+    x, y = find_points(x, y, 3, target_x)
+    
     a = []
 
     for i in range(3):
-        a.append( [1, xx[i], xx[i]**2] )
+        a.append( [1, x[i], x[i]**2] )
         
-    b = GEPP(a, yy)
+    b = GEPP(a, y)
     
     target_y = b[0] + b[1] * target_x + b[2] * target_x**2
     return target_y
     
 
 
-def Cubic_Interpolation( xx, yy, target_x):
+def Cubic_Interpolation( x, y, target_x):
+    
+    x, y = find_points(x, y, 4, target_x)
+        
     a = []
 
     for i in range(4):
-        a.append( [1, xx[i], xx[i]**2, xx[i]**3] )
+        a.append( [1, x[i], x[i]**2, x[i]**3] )
         
-    b = GEPP(a, yy)
+    b = GEPP(a, y)
     
     target_y = b[0] + b[1] * target_x + b[2] * target_x**2 + b[3] * target_x**3
     return target_y
     
 
-def Linear_Lagrangian_Interpolation(x0, y0, x1, y1, target_x):
+def Linear_Lagrangian_Interpolation(x, y, target_x):
+    
+    x, y = find_points(x, y, 2, target_x)
+    
+    x0, x1 = x
+    y0, y1 = y
+    
     L0 = (target_x - x1) / (x0 - x1)
     L1 = (target_x - x0) / (x1 - x0)
     
@@ -96,41 +134,51 @@ def Linear_Lagrangian_Interpolation(x0, y0, x1, y1, target_x):
     return target_y
     
     
-def Quadratic_Lagrangian_Interpolation(xx, yy, target_x):
+def Quadratic_Lagrangian_Interpolation(x, y, target_x):
+    x, y = find_points(x, y, 3, target_x)
+    
     L = []
     
     for i in range(3):
         mul = 1
         for j in range(3):
             if i != j:
-                mul *= (target_x - xx[j]) / (xx[i] - xx[j])
+                mul *= (target_x - x[j]) / (x[i] - x[j])
         L.append(mul)
     
     target_y = 0
     for i in range(3):
-        target_y += L[i] * yy[i]
+        target_y += L[i] * y[i]
         
     return target_y
         
 
-def Cubic_Lagrangian_Interpolation(xx, yy, target_x):
+def Cubic_Lagrangian_Interpolation(x, y, target_x):
+    
+    x, y = find_points(x, y, 4, target_x)
+    
     L = []
     
     for i in range(4):
         mul = 1
         for j in range(4):
             if i != j:
-                mul *= (target_x - xx[j]) / (xx[i] - xx[j])
+                mul *= (target_x - x[j]) / (x[i] - x[j])
         L.append(mul)
     
     target_y = 0
     for i in range(4):
-        target_y += L[i] * yy[i]
+        target_y += L[i] * y[i]
         
     return target_y
     
 
-def Linear_Newton_DD(x0, y0, x1, y1, target_x):
+def Linear_Newton_DD(x, y, target_x):
+    x, y = find_points(x, y, 2, target_x)
+    
+    x0, x1 = x
+    y0, y1 = y
+    
     b0 = y0
     b1 = (y1 - y0) / (x1 - x0)
     
@@ -139,6 +187,8 @@ def Linear_Newton_DD(x0, y0, x1, y1, target_x):
     
 
 def Quadratic_Newton_DD(x, y, target_x):
+    x, y = find_points(x, y, 3, target_x)
+    
     b0 = y[0]
     b1 = (y[1] - y[0]) / (x[1] - x[0])
     b2 = (( (y[2]-y[1]) / (x[2] - x[1]) ) - ( (y[1] - y[0]) / (x[1] - x[0]) )) / (x[2] - x[0])
@@ -148,6 +198,8 @@ def Quadratic_Newton_DD(x, y, target_x):
     
 
 def Cubic_Newton_DD(x, y, target_x):
+    x, y = find_points(x, y, 4, target_x)
+    
     b0 = y[0]
     b1 = (y[1] - y[0]) / (x[1] - x[0])
     b2 = (( (y[2]-y[1]) / (x[2] - x[1]) ) - ( (y[1] - y[0]) / (x[1] - x[0]) )) / (x[2] - x[0])
@@ -157,12 +209,21 @@ def Cubic_Newton_DD(x, y, target_x):
     target_y += b3 * (target_x - x[0]) * (target_x - x[1]) * (target_x - x[2])
     return target_y
     
-print( Linear_Interpolation(15, 362.78, 20, 517.35, 16) )
-print( Quadratic_Interpolation([10,15,20], [227.04, 362.78, 517.35], 16) )
-print( Cubic_Interpolation([10, 15, 20, 22.5], [227.04, 362.78, 517.35, 602.97], 16) )
-print( Linear_Lagrangian_Interpolation(15, 362.78, 20, 517.35, 16) )
-print( Quadratic_Lagrangian_Interpolation([10,15,20], [227.04, 362.78, 517.35], 16) )
-print( Cubic_Lagrangian_Interpolation([10, 15, 20, 22.5], [227.04, 362.78, 517.35, 602.97], 16) )
-print( Linear_Newton_DD(15, 362.78, 20, 517.35, 16) )
-print( Quadratic_Newton_DD([10,15,20], [227.04, 362.78, 517.35], 16) )
-print( Cubic_Newton_DD([10, 15, 20, 22.5], [227.04, 362.78, 517.35, 602.97], 16) )
+        
+
+x = [0, 10, 15, 20, 22.5, 30]
+y = [0, 227.04, 362.78, 517.35, 602.97, 901.67 ]
+
+
+
+print(Linear_Interpolation(x,y, 16))
+print(Quadratic_Interpolation(x,y, 16))
+print(Cubic_Interpolation(x,y, 16))
+
+print(Linear_Lagrangian_Interpolation(x,y, 16))
+print(Quadratic_Lagrangian_Interpolation(x,y, 16))
+print(Cubic_Lagrangian_Interpolation(x,y, 16))
+
+print(Linear_Newton_DD(x,y, 16))
+print(Quadratic_Newton_DD(x,y, 16))
+print(Cubic_Newton_DD(x,y, 16))
