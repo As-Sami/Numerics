@@ -1,0 +1,168 @@
+def GEPP(A: list, b: list):
+    '''Gaussian Elemination with Partial Pivoting'''
+    n = len(A)   
+    
+    a = []
+    
+    for x in A:
+        e = [];
+        for y in x:
+            e.append(y)
+        a.append(e)
+    
+    for i in range(n):
+        a[i].append(b[i])
+        
+    for k in range(n-1):
+        pos = k
+        val = a[k][k]
+        
+        for i in range(k+1, n):
+            if val < a[i][k]:
+                pos = i
+                val = a[i][k]
+        
+        a[k], a[pos] = a[pos], a[k]
+              
+        temp = a[k].copy()
+        val =  temp[k]
+        for i in range(len(temp)):
+            try:
+                temp[i] /= val
+            except:
+                print('divison by zero')
+                return None
+        
+        for i in range(k+1, n):
+            temp2 = temp.copy()
+            for j in range(len(temp2)):
+                temp2[j] *= a[i][k]
+            
+            for j in range(len(a[i])):
+                a[i][j] -= temp2[j]
+    
+        
+    solution = [0] * n
+    for i in range(n-1, -1, -1):
+        j = i+1
+        while j<n:
+            a[i][n] -= a[i][j]*solution[j]
+            j += 1
+        
+        solution[i] = a[i][n] / a[i][i]
+        
+    return solution
+
+
+def Linear_Interpolation(x0, y0, x1, y1, target_x):
+    
+    a1 = (y0 - y1) / (x0 - x1)
+    a0 = y0 - a1*x0
+
+    y_target = a0 + a1*target_x
+    return y_target
+
+
+def Quadratic_Interpolation( xx, yy, target_x):
+    a = []
+
+    for i in range(3):
+        a.append( [1, xx[i], xx[i]**2] )
+        
+    b = GEPP(a, yy)
+    
+    target_y = b[0] + b[1] * target_x + b[2] * target_x**2
+    return target_y
+    
+
+
+def Cubic_Interpolation( xx, yy, target_x):
+    a = []
+
+    for i in range(4):
+        a.append( [1, xx[i], xx[i]**2, xx[i]**3] )
+        
+    b = GEPP(a, yy)
+    
+    target_y = b[0] + b[1] * target_x + b[2] * target_x**2 + b[3] * target_x**3
+    return target_y
+    
+
+def Linear_Lagrangian_Interpolation(x0, y0, x1, y1, target_x):
+    L0 = (target_x - x1) / (x0 - x1)
+    L1 = (target_x - x0) / (x1 - x0)
+    
+    target_y = L0 * y0 + L1 * y1
+    return target_y
+    
+    
+def Quadratic_Lagrangian_Interpolation(xx, yy, target_x):
+    L = []
+    
+    for i in range(3):
+        mul = 1
+        for j in range(3):
+            if i != j:
+                mul *= (target_x - xx[j]) / (xx[i] - xx[j])
+        L.append(mul)
+    
+    target_y = 0
+    for i in range(3):
+        target_y += L[i] * yy[i]
+        
+    return target_y
+        
+
+def Cubic_Lagrangian_Interpolation(xx, yy, target_x):
+    L = []
+    
+    for i in range(4):
+        mul = 1
+        for j in range(4):
+            if i != j:
+                mul *= (target_x - xx[j]) / (xx[i] - xx[j])
+        L.append(mul)
+    
+    target_y = 0
+    for i in range(4):
+        target_y += L[i] * yy[i]
+        
+    return target_y
+    
+
+def Linear_Newton_DD(x0, y0, x1, y1, target_x):
+    b0 = y0
+    b1 = (y1 - y0) / (x1 - x0)
+    
+    target_y = b0 + b1 * (target_x - x0)
+    return target_y
+    
+
+def Quadratic_Newton_DD(x, y, target_x):
+    b0 = y[0]
+    b1 = (y[1] - y[0]) / (x[1] - x[0])
+    b2 = (( (y[2]-y[1]) / (x[2] - x[1]) ) - ( (y[1] - y[0]) / (x[1] - x[0]) )) / (x[2] - x[0])
+    
+    target_y = b0 + b1 * (target_x - x[0]) + b2 * (target_x - x[0]) * (target_x-x[1])
+    return target_y
+    
+
+def Cubic_Newton_DD(x, y, target_x):
+    b0 = y[0]
+    b1 = (y[1] - y[0]) / (x[1] - x[0])
+    b2 = (( (y[2]-y[1]) / (x[2] - x[1]) ) - ( (y[1] - y[0]) / (x[1] - x[0]) )) / (x[2] - x[0])
+    b3 = ( ( ( (y[3] - y[2]) / (x[3] - x[2]) - (y[2] - y[1]) / (x[2] - x[1]) ) / (x[3] - x[1]) ) - ( ( ( (y[2] - y[1])/(x[2] - x[1]) ) - ((y[1] - y[0]) / (x[1] - x[0])) ) / (x[2] - x[0]) ) ) / (x[3] - x[0])
+    
+    target_y = b0 + b1 * (target_x - x[0]) + b2 * (target_x - x[0]) * (target_x-x[1]) 
+    target_y += b3 * (target_x - x[0]) * (target_x - x[1]) * (target_x - x[2])
+    return target_y
+    
+print( Linear_Interpolation(15, 362.78, 20, 517.35, 16) )
+print( Quadratic_Interpolation([10,15,20], [227.04, 362.78, 517.35], 16) )
+print( Cubic_Interpolation([10, 15, 20, 22.5], [227.04, 362.78, 517.35, 602.97], 16) )
+print( Linear_Lagrangian_Interpolation(15, 362.78, 20, 517.35, 16) )
+print( Quadratic_Lagrangian_Interpolation([10,15,20], [227.04, 362.78, 517.35], 16) )
+print( Cubic_Lagrangian_Interpolation([10, 15, 20, 22.5], [227.04, 362.78, 517.35, 602.97], 16) )
+print( Linear_Newton_DD(15, 362.78, 20, 517.35, 16) )
+print( Quadratic_Newton_DD([10,15,20], [227.04, 362.78, 517.35], 16) )
+print( Cubic_Newton_DD([10, 15, 20, 22.5], [227.04, 362.78, 517.35, 602.97], 16) )
